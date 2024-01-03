@@ -1,6 +1,9 @@
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:water_detector_app/screens/languageSettingScreen.dart';
 import 'package:water_detector_app/screens/models/waterSourceModel.dart';
+import 'package:water_detector_app/screens/notifications.dart';
 import 'package:water_detector_app/screens/services/api.dart';
 
 class MainDashboardActivity extends StatefulWidget {
@@ -300,18 +303,17 @@ class _MainDashboardActivityState extends State<MainDashboardActivity> {
                 style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
               ),
               SizedBox(height: 8),
-              Text('pH Level: 7.2'),
-              Text('Turbidity: 15 NTU'),
-              Text('Chemical Contaminants: None detected'),
+              Text('pH Level: 7.0'),
+              Text('Turbidity: 18 NTU'),
+              Text('Chemical Contaminants:  detected'),
               Text(
                 'Ground Water',
                 style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
               ),
               SizedBox(height: 8),
-              Text('pH Level: 7.2'),
-              Text('Turbidity: 15 NTU'),
+              Text('pH Level: 7.5'),
+              Text('Turbidity: 12 NTU'),
               Text('Chemical Contaminants: None detected'),
-              // Add more analysis details as needed
             ],
           ),
         ),
@@ -322,7 +324,7 @@ class _MainDashboardActivityState extends State<MainDashboardActivity> {
   Widget _buildSettingsScreen() {
     return Scaffold(
       appBar: AppBar(
-        title: Text(
+        title: const Text(
           'Settings',
           style: TextStyle(fontWeight: FontWeight.bold),
         ),
@@ -335,28 +337,44 @@ class _MainDashboardActivityState extends State<MainDashboardActivity> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
+            const Text(
               'App Settings',
               style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
             ),
-            SizedBox(height: 16),
+            const SizedBox(height: 16),
             ListTile(
-              title: Text('Notification Preferences'),
-              subtitle: Text('Configure when to receive water-related alerts'),
-              trailing: Icon(Icons.arrow_forward_ios),
+              title: const Text('Notification Preferences'),
+              subtitle:
+                  const Text('Configure when to receive water-related alerts'),
+              trailing: const Icon(Icons.arrow_forward_ios),
               onTap: () {
-                // Handle navigation to notification settings screen
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => NotificationSettingsScreen()));
               },
             ),
             ListTile(
-              title: Text('Language Preferences'),
-              subtitle: Text('Choose your preferred language'),
-              trailing: Icon(Icons.arrow_forward_ios),
+              title: const Text('Language Preferences'),
+              subtitle: const Text('Choose your preferred language'),
+              trailing: const Icon(Icons.arrow_forward_ios),
               onTap: () {
-                // Handle navigation to language settings screen
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => LanguageSettingsScreen()));
               },
             ),
-            // Add more settings options as needed
+            ListTile(
+              title: const Text('User Report'),
+              subtitle: const Text('Generate your Report'),
+              trailing: const Icon(Icons.arrow_forward_ios),
+              onTap: () {
+                Fluttertoast.showToast(
+                    msg: 'I am working on this it will be implemented soon');
+                //Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>LanguageSettingsScreen()));
+              },
+            ),
           ],
         ),
       ),

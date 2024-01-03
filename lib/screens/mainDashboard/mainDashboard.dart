@@ -1,10 +1,14 @@
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
-import 'package:fluttertoast/fluttertoast.dart';
-import 'package:water_detector_app/screens/languageSettingScreen.dart';
+import 'package:water_detector_app/main.dart';
 import 'package:water_detector_app/screens/models/waterSourceModel.dart';
 import 'package:water_detector_app/screens/notifications.dart';
+import 'package:water_detector_app/screens/reportscreen.dart';
 import 'package:water_detector_app/screens/services/api.dart';
+import 'package:pdf/pdf.dart';
+import 'package:pdf/widgets.dart' as pw;
+import 'package:path_provider/path_provider.dart';
+import 'dart:io';
 
 class MainDashboardActivity extends StatefulWidget {
   const MainDashboardActivity({super.key});
@@ -36,6 +40,13 @@ class _MainDashboardActivityState extends State<MainDashboardActivity> {
             'In the city, groundwater availability fluctuates due to discontinuity in flow at greater depths and the presence of hard rock terrain. Recharging of upper shallow aquifers primarily occurs during the monsoon season. The city relies on both public (22%) and private (78%) bore-wells, some equipped with electric pumps. By 2021, records indicate 2195 bore-wells were drilled, with water tables ranging from 100 to 150 meters. There are around 10,000 bore-wells, with approximately 60% being seasonal (200 to 500 liters/day), 30% with medium discharge (500 to 2000 liters/day), and 10% exceeding 2500 liters/day. Groundwater contributes an estimated 3 to 4.5 MLD to the city\'s water resources. However, nearly 20% of bore-wells become unusable during the summer.'),
   ];
   int currentIndex = 0;
+  final _formKey = GlobalKey<FormState>();
+  final TextEditingController _nameController = TextEditingController();
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _problemController = TextEditingController();
+
+  //text editing Controllers
+
   /* @override
   void initState() {
     super.initState();
@@ -134,9 +145,6 @@ class _MainDashboardActivityState extends State<MainDashboardActivity> {
         itemCount: waterSourceData.length,
         itemBuilder: (context, index) {
           return InkWell(
-            onTap: () {
-              //This is going to be implemented soon
-            },
             onLongPress: () {
               showDialog(
                   context: context,
@@ -264,7 +272,8 @@ class _MainDashboardActivityState extends State<MainDashboardActivity> {
   Widget _buildWaterQualityAnalysisScreen() {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Water Quality Analysis'),
+        title: const Text(
+            'Water Quality Analysis\n Blue: Ujjani Dam\n Yellow: ekrukhHippargaLake \n Green: Ground Water'),
       ),
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -355,28 +364,139 @@ class _MainDashboardActivityState extends State<MainDashboardActivity> {
               },
             ),
             ListTile(
-              title: const Text('Language Preferences'),
-              subtitle: const Text('Choose your preferred language'),
+              title: const Text('Restart The App'),
+              subtitle: const Text('This App will Restart'),
               trailing: const Icon(Icons.arrow_forward_ios),
               onTap: () {
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => LanguageSettingsScreen()));
+                Navigator.pushReplacement(
+                    context, MaterialPageRoute(builder: (context) => MyApp()));
               },
             ),
             ListTile(
-              title: const Text('User Report'),
-              subtitle: const Text('Generate your Report'),
-              trailing: const Icon(Icons.arrow_forward_ios),
-              onTap: () {
-                Fluttertoast.showToast(
-                    msg: 'I am working on this it will be implemented soon');
-                //Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>LanguageSettingsScreen()));
-              },
-            ),
+                title: const Text('User Report'),
+                subtitle: const Text('Generate your Report'),
+                trailing: const Icon(Icons.arrow_forward_ios),
+                onTap: () {
+                  _generateUserReport();
+                }),
           ],
         ),
+      ),
+    );
+  }
+
+  void _generateUserReport() {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('User Report'),
+        content: Form(
+          key: _formKey,
+          child: SingleChildScrollView(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                TextFormField(
+                  controller: _nameController,
+                  autovalidateMode: AutovalidateMode.onUserInteraction,
+                  decoration: const InputDecoration(labelText: 'Name'),
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Please enter your name';
+                    }
+                    return null;
+                  },
+                ),
+                TextFormField(
+                  controller: _emailController,
+                  decoration: const InputDecoration(labelText: 'Email'),
+                  autovalidateMode: AutovalidateMode.onUserInteraction,
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Please enter your email';
+                    } else if (!value.contains('@')) {
+                      return 'Please enter a valid email address';
+                    }
+                    return null;
+                  },
+                ),
+                SizedBox(height: 16),
+                TextFormField(
+                  controller: _problemController,
+                  textInputAction: TextInputAction.done,
+                  decoration: const InputDecoration(
+                      border: OutlineInputBorder(),
+                      focusedBorder: OutlineInputBorder(),
+                      labelText:
+                          'What is your possible solution to solve water problem?'),
+                  autovalidateMode: AutovalidateMode.onUserInteraction,
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'This field cannot be empty';
+                    }
+                    return null;
+                  },
+                  maxLines: 5,
+                ),
+                SizedBox(height: 16),
+                ElevatedButton(
+                  onPressed: () {
+                    if (_formKey.currentState?.validate() == true) {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => ReportScreen(
+                            name: _nameController.text,
+                            email: _emailController.text,
+                            solution: _problemController.text,
+                          ),
+                        ),
+                      );
+                    }
+                  },
+                  child: const Text('Generate Report'),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Future<void> _generateAndDownloadReport() async {
+    final pdf = pw.Document();
+
+    // Add user information and report content to the PDF
+    pdf.addPage(
+      pw.Page(
+        build: (context) {
+          return pw.Column(
+            crossAxisAlignment: pw.CrossAxisAlignment.start,
+            children: [
+              pw.Text('User Report', style: pw.TextStyle(fontSize: 24)),
+              pw.SizedBox(height: 16),
+              pw.Text('Name: ${_nameController.text}'),
+              pw.Text('Email: ${_emailController.text}'),
+              pw.Text('Solution: ${_problemController.text}'),
+            ],
+          );
+        },
+      ),
+    );
+
+    // Save the PDF to a file
+    final output = await getExternalStorageDirectory();
+    final file = File('${output?.path}/user_report.pdf');
+    await file.writeAsBytes(await pdf.save());
+
+    // Show a confirmation dialog
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Report Generated'),
+        content: Text(
+            'The user report has been generated and saved as: ${file.path}'),
       ),
     );
   }

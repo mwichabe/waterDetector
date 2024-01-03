@@ -41,7 +41,7 @@ class _SplashScreenState extends State<SplashScreen> {
                 duration: const Duration(seconds: 1),
                 width: _containerSize,
                 height: _containerSize,
-                child: ClipOval(child: Image.asset('ios/assets/logo.jpg')),
+                child: ClipOval(child: Image.asset('assets/logo.jpg')),
               ),
             )));
   }

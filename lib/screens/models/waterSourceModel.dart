@@ -3,8 +3,12 @@ class WaterSource {
   final double currentLevel;
   final String quality;
   final String desc;
+  final double latitude;
+  final double longitude;
 
   WaterSource({
+    required this.latitude,
+    required this.longitude,
     required this.name,
     required this.currentLevel,
     required this.quality,
@@ -16,6 +20,8 @@ class WaterSource {
       currentLevel: json['currentLevel'].toDouble(),
       quality: json['quality'],
       desc: json['desc'],
+      latitude: json['latitude'].toDouble(),
+      longitude: json['longitude'].toDouble(),
     );
   }
 }

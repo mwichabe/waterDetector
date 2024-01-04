@@ -5,10 +5,11 @@ import 'package:water_detector_app/screens/models/waterSourceModel.dart';
 import 'package:water_detector_app/screens/notifications.dart';
 import 'package:water_detector_app/screens/reportscreen.dart';
 import 'package:water_detector_app/screens/services/api.dart';
-import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
 import 'package:path_provider/path_provider.dart';
 import 'dart:io';
+
+import 'package:water_detector_app/widgets/mapWidget.dart';
 
 class MainDashboardActivity extends StatefulWidget {
   const MainDashboardActivity({super.key});
@@ -21,23 +22,32 @@ class _MainDashboardActivityState extends State<MainDashboardActivity> {
   final ApiService apiService = ApiService();
   List<WaterSource> waterSourceData = [
     WaterSource(
-        name: 'Ujjani Dam',
-        currentLevel: 3.5,
-        quality: 'Excellent',
-        desc:
-            'The Ujjani Dam, located near the village of Ujjani on the Bhima River in Solapur district, Maharashtra, India, is the largest dam on the river. Built from 1969 to 1980, it is an earthfill and gravity dam with a capacity of 3,313,071,000 m³. The dam, with a height of 56.4 m and length of 2534 m, serves various purposes, including irrigation, hydroelectric power generation (12 MW), drinking water supply, and fisheries. The reservoir, known as "Yashwant Sagar," has 41 doors. Despite being the last dam on the Bhima River, it intercepts a vast catchment area of 14,856 square km. The dam plays a crucial role in supplying water to Solapur and neighboring districts, even during low rainfall, thanks to contributions from the western side of Pune district. The multipurpose reservoir supports irrigation through the Left Bank Main Canal (LBMC) and the Right Bank Main Canal (RBMC). The dam stands as a significant infrastructure project, contributing to the sustainable development of the region.'),
+      name: 'Ujjani Dam',
+      currentLevel: 3.5,
+      quality: 'Excellent',
+      desc:
+          'The Ujjani Dam, located near the village of Ujjani on the Bhima River in Solapur district, Maharashtra, India, is the largest dam on the river. Built from 1969 to 1980, it is an earthfill and gravity dam with a capacity of 3,313,071,000 m³. The dam, with a height of 56.4 m and length of 2534 m, serves various purposes, including irrigation, hydroelectric power generation (12 MW), drinking water supply, and fisheries. The reservoir, known as "Yashwant Sagar," has 41 doors. Despite being the last dam on the Bhima River, it intercepts a vast catchment area of 14,856 square km. The dam plays a crucial role in supplying water to Solapur and neighboring districts, even during low rainfall, thanks to contributions from the western side of Pune district. The multipurpose reservoir supports irrigation through the Left Bank Main Canal (LBMC) and the Right Bank Main Canal (RBMC). The dam stands as a significant infrastructure project, contributing to the sustainable development of the region.',
+      latitude: 18.0739,
+      longitude: 75.1200,
+    ),
     WaterSource(
-        name: 'Ekrukh Hipparga Lake',
-        currentLevel: 2.8,
-        quality: 'Moderate',
-        desc:
-            'Ekrukh Hipparhe Lake was established during the period when Solapur was under British rule 1871. It has a capacity of 84,950,540 m3 and this lake is one of the historical man-made water reservoirs near Solapur city at a distance of around 12 km. The reservoir commands a gross area of 17,152 acres with maximum height of 21.45m. The total catchment area of the reservoir is 411.81 sq.km. In addition to water for irrigation and domestic use in villages, Ekrukh Lake provides drinking water to Solapur city and is one of the city’s major water resources.'),
+      name: 'Ekrukh Hipparga Lake',
+      currentLevel: 2.8,
+      quality: 'Moderate',
+      desc:
+          'Ekrukh Hipparhe Lake was established during the period when Solapur was under British rule 1871. It has a capacity of 84,950,540 m3 and this lake is one of the historical man-made water reservoirs near Solapur city at a distance of around 12 km. The reservoir commands a gross area of 17,152 acres with maximum height of 21.45m. The total catchment area of the reservoir is 411.81 sq.km. In addition to water for irrigation and domestic use in villages, Ekrukh Lake provides drinking water to Solapur city and is one of the city’s major water resources.',
+      latitude: 17.7445,
+      longitude: 75.9144,
+    ),
     WaterSource(
-        name: 'Ground Water',
-        currentLevel: 4.2,
-        quality: 'Excellent',
-        desc:
-            'In the city, groundwater availability fluctuates due to discontinuity in flow at greater depths and the presence of hard rock terrain. Recharging of upper shallow aquifers primarily occurs during the monsoon season. The city relies on both public (22%) and private (78%) bore-wells, some equipped with electric pumps. By 2021, records indicate 2195 bore-wells were drilled, with water tables ranging from 100 to 150 meters. There are around 10,000 bore-wells, with approximately 60% being seasonal (200 to 500 liters/day), 30% with medium discharge (500 to 2000 liters/day), and 10% exceeding 2500 liters/day. Groundwater contributes an estimated 3 to 4.5 MLD to the city\'s water resources. However, nearly 20% of bore-wells become unusable during the summer.'),
+      name: 'Ground Water',
+      currentLevel: 4.2,
+      quality: 'Excellent',
+      desc:
+          'In the city, groundwater availability fluctuates due to discontinuity in flow at greater depths and the presence of hard rock terrain. Recharging of upper shallow aquifers primarily occurs during the monsoon season. The city relies on both public (22%) and private (78%) bore-wells, some equipped with electric pumps. By 2021, records indicate 2195 bore-wells were drilled, with water tables ranging from 100 to 150 meters. There are around 10,000 bore-wells, with approximately 60% being seasonal (200 to 500 liters/day), 30% with medium discharge (500 to 2000 liters/day), and 10% exceeding 2500 liters/day. Groundwater contributes an estimated 3 to 4.5 MLD to the city\'s water resources. However, nearly 20% of bore-wells become unusable during the summer.',
+      latitude: 74.42,
+      longitude: 76.15,
+    ),
   ];
   int currentIndex = 0;
   final _formKey = GlobalKey<FormState>();
@@ -86,13 +96,13 @@ class _MainDashboardActivityState extends State<MainDashboardActivity> {
         showUnselectedLabels: true,
         selectedItemColor: Colors.black,
         unselectedItemColor: Colors.blue.shade100,
-        items: [
-          const BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
-          const BottomNavigationBarItem(
+        items: const [
+          BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
+          BottomNavigationBarItem(
               icon: Icon(Icons.show_chart), label: 'Water \n Level'),
-          const BottomNavigationBarItem(
+          BottomNavigationBarItem(
               icon: Icon(Icons.water), label: 'Water \n Quality'),
-          const BottomNavigationBarItem(
+          BottomNavigationBarItem(
               icon: Icon(Icons.settings), label: 'Settings'),
         ],
         currentIndex: currentIndex,
@@ -135,6 +145,10 @@ class _MainDashboardActivityState extends State<MainDashboardActivity> {
           ),
         ),
         _buildWaterSourceList(),
+        const SizedBox(height: 16),
+        Expanded(
+          child: MapWidget(waterSourceData: waterSourceData),
+        ),
       ],
     );
   }
@@ -225,6 +239,10 @@ class _MainDashboardActivityState extends State<MainDashboardActivity> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           const Text(
+            'Blue: Ujjani Dam\n Yellow: ekrukhHippargaLake \n Green: Ground Water',
+            style: TextStyle(fontSize: 12, color: Colors.black87),
+          ),
+          const Text(
             'Water Level Monitoring',
             style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
           ),
@@ -271,10 +289,7 @@ class _MainDashboardActivityState extends State<MainDashboardActivity> {
 
   Widget _buildWaterQualityAnalysisScreen() {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text(
-            'Water Quality Analysis\n Blue: Ujjani Dam\n Yellow: ekrukhHippargaLake \n Green: Ground Water'),
-      ),
+      appBar: AppBar(),
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -368,8 +383,8 @@ class _MainDashboardActivityState extends State<MainDashboardActivity> {
               subtitle: const Text('This App will Restart'),
               trailing: const Icon(Icons.arrow_forward_ios),
               onTap: () {
-                Navigator.pushReplacement(
-                    context, MaterialPageRoute(builder: (context) => MyApp()));
+                Navigator.pushReplacement(context,
+                    MaterialPageRoute(builder: (context) => const MyApp()));
               },
             ),
             ListTile(
@@ -420,7 +435,7 @@ class _MainDashboardActivityState extends State<MainDashboardActivity> {
                     return null;
                   },
                 ),
-                SizedBox(height: 16),
+                const SizedBox(height: 16),
                 TextFormField(
                   controller: _problemController,
                   textInputAction: TextInputAction.done,
@@ -438,7 +453,7 @@ class _MainDashboardActivityState extends State<MainDashboardActivity> {
                   },
                   maxLines: 5,
                 ),
-                SizedBox(height: 16),
+                const SizedBox(height: 16),
                 ElevatedButton(
                   onPressed: () {
                     if (_formKey.currentState?.validate() == true) {
@@ -474,7 +489,7 @@ class _MainDashboardActivityState extends State<MainDashboardActivity> {
           return pw.Column(
             crossAxisAlignment: pw.CrossAxisAlignment.start,
             children: [
-              pw.Text('User Report', style: pw.TextStyle(fontSize: 24)),
+              pw.Text('User Report', style: const pw.TextStyle(fontSize: 24)),
               pw.SizedBox(height: 16),
               pw.Text('Name: ${_nameController.text}'),
               pw.Text('Email: ${_emailController.text}'),

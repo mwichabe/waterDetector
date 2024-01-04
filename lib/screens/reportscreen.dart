@@ -4,13 +4,15 @@ import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:screenshot/screenshot.dart';
+import 'package:water_detector_app/widgets/weatherUpdate.dart';
 
 class ReportScreen extends StatefulWidget {
   final String name;
   final String email;
   final String solution;
 
-  ReportScreen({
+  const ReportScreen({
+    super.key,
     required this.name,
     required this.email,
     required this.solution,
@@ -36,6 +38,8 @@ class _ReportScreenState extends State<ReportScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              WeatherUpdateWidget(),
+              SizedBox(height: 16),
               _buildHeader(),
               SizedBox(height: 16),
               _buildUserInfo(),

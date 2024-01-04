@@ -9,7 +9,7 @@ class WeatherUpdateWidget extends StatefulWidget {
 }
 
 class _WeatherUpdateWidgetState extends State<WeatherUpdateWidget> {
-  late String weatherData = ''; // Initialize with an empty string
+  late String weatherData = '';
 
   @override
   void initState() {

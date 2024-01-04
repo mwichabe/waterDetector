@@ -127,8 +127,6 @@ class _ReportScreenState extends State<ReportScreen> {
       // Write the image to the local file
       File file = File(filePath);
       await file.writeAsBytes(imageBytes);
-
-      // Display a message or perform any other actions based on the saved file
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Screenshot saved to $filePath')),
       );

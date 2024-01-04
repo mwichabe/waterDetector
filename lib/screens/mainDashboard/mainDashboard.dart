@@ -89,6 +89,41 @@ class _MainDashboardActivityState extends State<MainDashboardActivity> {
         backgroundColor: Colors.blue.shade100,
         elevation: 0,
         centerTitle: true,
+        actions: [
+          IconButton(
+              onPressed: () {
+                showDialog(
+                    context: context,
+                    builder: ((context) => const AlertDialog(
+                          title: Text('Water Conservation Tips'),
+                          content: SingleChildScrollView(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Text(
+                                    '1. Fix Leaks: Regularly check for and repair any leaks in faucets, toilets, and pipes.'),
+                                Text(
+                                    '2. Shorter Showers: Take shorter showers to reduce water consumption.'),
+                                Text(
+                                    '3. Turn Off Taps: Turn off the tap while brushing teeth or washing hands.'),
+                                Text(
+                                    '4. Use Full Loads: Only run the dishwasher and washing machine when you have a full load.'),
+                                Text(
+                                    '5. Collect Rainwater: Consider collecting rainwater for watering plants.'),
+                                Text(
+                                    '6. Install Water-Saving Devices: Install water-efficient faucets, showerheads, and toilets.'),
+                                Text(
+                                    '7. Water Plants Wisely: Water your plants early in the morning or late in the evening to minimize evaporation.'),
+                                Text(
+                                    '8. Mulch Around Plants: Mulching helps retain soil moisture, reducing the need for frequent watering.'),
+                              ],
+                            ),
+                          ),
+                        )));
+              },
+              icon: const Icon(Icons.info))
+        ],
       ),
       body: _buildCurrentScreen(),
       bottomNavigationBar: BottomNavigationBar(

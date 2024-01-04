@@ -29,7 +29,7 @@ class _ReportScreenState extends State<ReportScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('User Report'),
+        title: const Text('User Report'),
       ),
       body: Screenshot(
         controller: _screenshotController,
@@ -38,14 +38,14 @@ class _ReportScreenState extends State<ReportScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              WeatherUpdateWidget(),
-              SizedBox(height: 16),
+              const WeatherUpdateWidget(),
+              const SizedBox(height: 16),
               _buildHeader(),
-              SizedBox(height: 16),
+              const SizedBox(height: 16),
               _buildUserInfo(),
-              SizedBox(height: 16),
+              const SizedBox(height: 16),
               _buildSolution(),
-              SizedBox(height: 16),
+              const SizedBox(height: 16),
               _buildScreenshotButton(),
             ],
           ),
@@ -55,7 +55,7 @@ class _ReportScreenState extends State<ReportScreen> {
   }
 
   Widget _buildHeader() {
-    return Column(
+    return const Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
@@ -77,11 +77,11 @@ class _ReportScreenState extends State<ReportScreen> {
       children: [
         Text(
           'Name: ${widget.name}',
-          style: TextStyle(fontSize: 18),
+          style: const TextStyle(fontSize: 18),
         ),
         Text(
           'Email: ${widget.email}',
-          style: TextStyle(fontSize: 18),
+          style: const TextStyle(fontSize: 18),
         ),
       ],
     );
@@ -91,13 +91,13 @@ class _ReportScreenState extends State<ReportScreen> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
+        const Text(
           'Possible Solution:',
           style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
         ),
         Text(
           widget.solution,
-          style: TextStyle(fontSize: 16),
+          style: const TextStyle(fontSize: 16),
         ),
       ],
     );
@@ -136,7 +136,7 @@ class _ReportScreenState extends State<ReportScreen> {
       // Handle the error
       print('Error saving screenshot: $e');
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Error saving screenshot')),
+        const SnackBar(content: Text('Error saving screenshot')),
       );
     }
   }

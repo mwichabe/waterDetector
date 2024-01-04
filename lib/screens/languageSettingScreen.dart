@@ -29,7 +29,6 @@ class LanguageSettingsScreen extends StatelessWidget {
             SizedBox(height: 16),
             _buildLanguageOption('English', 'en_US', context),
             _buildLanguageOption('Spanish', 'es_US', context),
-            // Add more language preferences options as needed
           ],
         ),
       ),

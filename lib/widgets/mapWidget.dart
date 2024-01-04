@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:latlong2/latlong.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:water_detector_app/screens/models/waterSourceModel.dart';
 
 class MapWidget extends StatefulWidget {
@@ -24,19 +25,28 @@ class _MapWidgetState extends State<MapWidget> {
   }
 
   Future<void> _getLocation() async {
-    _currentPosition = await Geolocator.getCurrentPosition(
-      desiredAccuracy: LocationAccuracy.high,
-    );
-    _currentLatLng =
-        LatLng(_currentPosition.latitude, _currentPosition.longitude);
-    setState(() {});
+    var status = await Permission.location.request();
+    if (status == PermissionStatus.granted) {
+      _currentPosition = await Geolocator.getCurrentPosition(
+        desiredAccuracy: LocationAccuracy.high,
+      );
+      _currentLatLng =
+          LatLng(_currentPosition.latitude, _currentPosition.longitude);
+      setState(() {});
+    } else {
+      print('Permission denied');
+    }
   }
 
   Set<Marker> _buildMarkers() {
     return widget.waterSourceData.map((source) {
       return Marker(
         point: LatLng(source.latitude, source.longitude),
-        child: Text(source.name),
+        child: Text(
+          source.name,
+          style: const TextStyle(
+              color: Colors.purple, fontSize: 14, fontWeight: FontWeight.bold),
+        ),
       );
     }).toSet();
   }
@@ -56,8 +66,7 @@ class _MapWidgetState extends State<MapWidget> {
           ),
           children: [
             TileLayer(
-              urlTemplate: 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
-              subdomains: const ['a', 'b', 'c'],
+              urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
             ),
             MarkerLayer(
               markers: _currentLatLng != null

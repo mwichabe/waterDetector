@@ -9,18 +9,20 @@ class WeatherUpdateWidget extends StatefulWidget {
 }
 
 class _WeatherUpdateWidgetState extends State<WeatherUpdateWidget> {
-  late String weatherData;
+  late String weatherData = ''; // Initialize with an empty string
 
   @override
   void initState() {
     super.initState();
-    _fetchWeatherData();
+    _loadWeatherData();
   }
 
-  Future<void> _fetchWeatherData() async {
+  Future<void> _loadWeatherData() async {
     try {
-      weatherData = await WeatherService.getWeatherData();
-      setState(() {});
+      final data = await WeatherService.getWeatherData();
+      setState(() {
+        weatherData = data;
+      });
     } catch (e) {
       print('Error fetching weather data: $e');
     }
@@ -35,10 +37,16 @@ class _WeatherUpdateWidgetState extends State<WeatherUpdateWidget> {
           'Weather Updates:',
           style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
         ),
-        Text(
-          weatherData,
-          style: const TextStyle(fontSize: 16),
-        ),
+        if (weatherData.isNotEmpty) // Check if weatherData is not empty
+          Text(
+            weatherData,
+            style: const TextStyle(fontSize: 16),
+          ),
+        if (weatherData.isEmpty) // Check if weatherData is empty
+          Text(
+            'Loading...',
+            style: const TextStyle(fontSize: 16),
+          ),
       ],
     );
   }

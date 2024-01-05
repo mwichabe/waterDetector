@@ -342,41 +342,59 @@ class _MainDashboardActivityState extends State<MainDashboardActivity> {
   }
 
   Widget _buildAnalysisDetails() {
-    return const Expanded(
+    return Expanded(
       child: Padding(
-        padding: EdgeInsets.all(16.0),
+        padding: const EdgeInsets.all(16.0),
         child: SingleChildScrollView(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(
-                'Ujjani Dam',
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-              ),
-              SizedBox(height: 8),
-              Text('pH Level: 7.2'),
-              Text('Turbidity: 15 NTU'),
-              Text('Chemical Contaminants: None detected'),
-              Text(
-                'Ekrukh Hipparga Lake',
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-              ),
-              SizedBox(height: 8),
-              Text('pH Level: 7.0'),
-              Text('Turbidity: 18 NTU'),
-              Text('Chemical Contaminants:  detected'),
-              Text(
-                'Ground Water',
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-              ),
-              SizedBox(height: 8),
-              Text('pH Level: 7.5'),
-              Text('Turbidity: 12 NTU'),
-              Text('Chemical Contaminants: None detected'),
+              _buildSection('Ujjani Dam', 'pH Level: 7.2', 'Turbidity: 15 NTU',
+                  'Chemical Contaminants: None detected'),
+              _buildSection('Ekrukh Hipparga Lake', 'pH Level: 7.0',
+                  'Turbidity: 18 NTU', 'Chemical Contaminants: Detected'),
+              _buildSection('Ground Water', 'pH Level: 7.5',
+                  'Turbidity: 12 NTU', 'Chemical Contaminants: None detected'),
             ],
           ),
         ),
       ),
+    );
+  }
+
+  Widget _buildSection(
+      String title, String pHLevel, String turbidity, String contaminants) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          title,
+          style: const TextStyle(
+              fontSize: 22, fontWeight: FontWeight.bold, color: Colors.blue),
+        ),
+        const SizedBox(height: 8),
+        _buildInfoRow('pH Level:', pHLevel),
+        _buildInfoRow('Turbidity:', turbidity),
+        _buildInfoRow('Chemical Contaminants:', contaminants),
+        const SizedBox(height: 16),
+      ],
+    );
+  }
+
+  Widget _buildInfoRow(String label, String value) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Text(
+          label,
+          style: const TextStyle(
+              fontSize: 16, fontWeight: FontWeight.bold, color: Colors.grey),
+        ),
+        Text(
+          value,
+          style: const TextStyle(fontSize: 16, color: Colors.black87),
+        ),
+      ],
     );
   }
 
